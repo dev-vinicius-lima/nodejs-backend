@@ -2,7 +2,31 @@ const express = require("express");
 const exphbs = require("express-handlebars");
 const mysql = require("mysql");
 
+const conn = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "devviniciuslima",
+  database: "nodeMySqlMB"
+})
 const app = express();
+
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+)
+app.use(express.json());
+
+
+conn.connect((err) => {
+  if (err) {
+    console.log(err)
+
+  }
+  console.log("Conectado ao MySQL")
+
+})
+
 
 app.engine("handlebars", exphbs.engine());
 app.set("view engine", "handlebars");
@@ -13,21 +37,20 @@ app.get("/", (req, res) => {
   res.render("home")
 })
 
-const conn = mysql.createConnection({
-  host: "localhost",
-  user: "ajan4775_myfirstdb",
-  password: "!Xm8vh487j!fL69a20",
-  database: "ajan4775_myfirstdb"
-})
+app.post("/books/insertbook", (req, res) => {
+  const title = req.body.title
+  const pagesqty = req.body.pagesqty
 
-conn.connect((err) => {
-  if (err) {
+  const sql = `INSERT INTO books(title, pagesqty) VALUES ('${title}', '${pagesqty}')`
+  conn.query(sql, (err) => {
     console.log(err)
-  }
-  console.log("Conectado ao MySQL")
+  })
+  console.log("Livro Cadastrado com sucesso!")
 
+  res.redirect("/")
 })
 
-app.listen(3306, () => {
-  console.log("Servidor rodando na porta 3306")
+
+app.listen(3333, () => {
+  console.log("Servidor rodando na porta 3333")
 })
