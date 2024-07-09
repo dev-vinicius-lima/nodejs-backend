@@ -37,6 +37,19 @@ app.get("/", (req, res) => {
   res.render("home")
 })
 
+app.get("/books", (req, res) => {
+  const sql = "SELECT * FROM books"
+  conn.query(sql, (err, data) => {
+    if (err) {
+      console.log(err)
+      return
+    }
+    const books = data
+    console.log(books)
+    res.render("books", { books })
+  })
+})
+
 app.post("/books/insertbook", (req, res) => {
   const title = req.body.title
   const pagesqty = req.body.pagesqty
@@ -47,7 +60,7 @@ app.post("/books/insertbook", (req, res) => {
   })
   console.log("Livro Cadastrado com sucesso!")
 
-  res.redirect("/")
+  res.redirect("/books")
 })
 
 
