@@ -13,7 +13,7 @@ router.post("/categories/save", (req, res) => {
     Category.count({ where: { title: title } }).then(count => {
       if (count == 0) {
         Category.create({ title, slug: slugify(title) }).then(() => {
-          res.redirect("/admin/categories/index")
+          res.redirect("/admin/categories")
         })
       }
       else {
@@ -49,6 +49,36 @@ router.post("/categories/delete", (req, res) => {
     res.redirect("/admin/categories")
   }
 
+})
+
+router.get("/admin/categories/edit/:id", (req, res) => {
+  const { id } = req.params
+
+  if (isNaN(id)) {
+    res.redirect("/admin/categories")
+  }
+
+  Category.findByPk(id).then(category => {
+    if (category != undefined) {
+      res.render("../views/admin/categories/edit.ejs", { category: category })
+
+    } else {
+      res.redirect("/admin/categories")
+    }
+  }).catch(error => {
+    res.redirect("/admin/categories")
+  })
+})
+
+router.post("/categories/update", (req, res) => {
+  const { id, title } = req.body
+  Category.update({ title, slug: slugify(title) }, {
+    where: {
+      id
+    }
+  }).then(() => {
+    res.redirect("/admin/categories")
+  })
 })
 
 
