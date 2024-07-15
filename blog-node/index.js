@@ -1,5 +1,10 @@
 import express from "express";
 import connection from "./database/database.js";
+import CategoriesController from "./categories/CategoriesController.js";
+import articlesController from "./articles/ArticlesController.js";
+
+import Category from './categories/Category.js';
+import Article from './articles/Article.js';
 
 const app = express();
 const port = 3000;
@@ -15,6 +20,9 @@ connection.authenticate().then(() => {
 }).catch((error) => {
   console.log("ococorreu um erro: ", error)
 })
+
+app.use("/", CategoriesController);
+app.use("/", articlesController);
 
 app.get("/", (req, res) => {
   res.render("index");
