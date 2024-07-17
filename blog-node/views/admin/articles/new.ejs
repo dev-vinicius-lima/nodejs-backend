@@ -7,16 +7,16 @@
           <h2>Novo Artigo</h2>
         </div>
         <div class="card-body">
-          <form action="/categories/save" method="POST">
+          <form action="/articles/save" method="POST">
             <input type="text" name="title" placeholder="Defina o titulo do artigo" class="form-control"> <br>
             <textarea name="body" placeholder="Escreva o conteudo do artigo" class="form-control"
               id="article"></textarea> <br>
-            <label for="categorie">Categoria:</label>
-            <select name="categoire" class="form-control">
+            <label for="categoryId">Categoria:</label>
+            <select name="categoryId" class="form-control">
               <% categories.forEach((category)=> { %>
                 <option value="<%= category.id %>">
                   <%= category.title %>
-                </option>
+                </option>s
                 <%}); %>
             </select> <br>
             <button type="submit" class="btn btn-success">Cadastrar</button>
@@ -32,7 +32,7 @@
           language: 'pt_BR',
           selector: '#article',
           plugins: [
-            'advlist autolink lists link image charmap preview print hr searchreplace wordcount visualblocks visualchars code fullscreen isertdatetime media nonbreaking save table contextmenu directionality emoticons template paste textcolor colorpicker textpattern imagetools codesample toc help',
+            'advlist autolink lists link image charmap preview print hr searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking save table contextmenu directionality emoticons template paste textcolor colorpicker textpattern imagetools codesample toc help',
           ],
         })
       </script>
