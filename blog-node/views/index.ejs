@@ -1,6 +1,31 @@
 <%- include('partials/head.ejs') %>
-<body>
-  <%- include('partials/navbar.ejs') %>
-  <h1>NodeJS</h1>
-</body>
-<%- include('partials/footer.ejs') %>
+
+  <body>
+    <%- include('partials/navbar.ejs') %>
+      <hr>
+      <div class="jumbotron container">
+        <h1 class="display-4">Bem vindo ao blog tech!</h1>
+        <p class="lead">Este é um simples blog para treinar nodeJs, ejs e mySQL.</p>
+        <hr class="my-4">
+        <p class="lead">
+          <a class="btn btn-primary btn-lg" href="#" role="button">Leia mais</a>
+        </p>
+      </div>
+
+      <div class="container">
+        <% articles.forEach((article)=> { %>
+          <div class="card">
+            <div class="card-header">
+              <%= article.title %>
+            </div>
+            <div class="card-body">
+              <a href="/<%= article.slug %>" class="btn btn-success">Ler artigo</a>
+            </div>
+          </div>
+          <br>
+          <hr>
+          <br>
+          <% }); %>
+      </div>
+  </body>
+  <%- include('partials/footer.ejs') %>

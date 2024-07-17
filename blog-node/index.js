@@ -25,8 +25,30 @@ app.use("/", CategoriesController);
 app.use("/", articlesController);
 
 app.get("/", (req, res) => {
-  res.render("index");
+  Article.findAll({
+    order: [
+      ["id", "DESC"]
+    ]
+  }).then(articles => {
+    res.render("index", { articles });
+  })
 });
+
+app.get("/:slug", (req, res) => {
+  const { slug } = req.params
+  Article.findOne({
+    where: { slug },
+    include: [{ model: Category }]
+  }).then(article => {
+    if (article != undefined) {
+      res.render("article", { article: article })
+    } else {
+      res.redirect("/")
+    }
+  }).catch(error => {
+    res.redirect("/")
+  })
+})
 
 
 app.listen(port, () => {
