@@ -54,6 +54,24 @@ app.get("/:slug", (req, res) => {
   })
 })
 
+app.get("/category/:slug", (req, res) => {
+  const { slug } = req.params
+
+  Category.findOne({
+    where: { slug },
+    include: [{ model: Article }]
+  }).then(category => {
+    if (category != undefined) {
+      Category.findAll().then(categories => {
+        res.render("index", { articles: category.articles, categories })
+      })
+    } else {
+      res.redirect("/")
+    }
+  }).catch(error => {
+    res.redirect("/")
+  })
+})
 
 app.listen(port, () => {
   console.log(`Servidor rodando na porta ${port}`)

@@ -53,4 +53,55 @@ router.post("/articles/delete", (req, res) => {
 
 })
 
+router.get("/admin/articles/edit/:id", (req, res) => {
+  const { id } = req.params
+  Article.findByPk(id).then(article => {
+    if (article != undefined) {
+      Category.findAll().then(categories => {
+        res.render("admin/articles/edit", { article: article, categories: categories })
+      })
+    } else {
+      res.redirect("/admin/articles")
+    }
+  })
+})
+
+
+router.post("/articles/update", (req, res) => {
+  const { id, title, body, category } = req.body
+  Article.update({ title, body, categoryId: category, slug: slugify(title) }, {
+    where: {
+      id
+    }
+  }).then(() => {
+    res.redirect("/admin/articles")
+  }).catch(error => {
+    res.redirect("/admin/articles")
+  })
+})
+
+// Paginação
+router.get("/articles/page/:num", (req, res) => {
+  const { num } = req.params
+  const offset = (parseInt(num) - 1) * 4
+  Article.findAndCountAll({
+    limit: 4,
+    offset: offset
+  }).then(articles => {
+    let next
+    if (offset + 4 >= articles.count) {
+      next = false
+    } else {
+      next = true
+    }
+    const result = {
+      articles: articles.rows,
+      next: next
+    }
+    Category.findAll().then(categories => {
+      res.render("admin/articles/page", { result: result, categories: categories })
+    })
+  })
+})
+
 export default router;

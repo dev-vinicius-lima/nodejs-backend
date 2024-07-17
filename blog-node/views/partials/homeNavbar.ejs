@@ -3,7 +3,8 @@
   <ul class="navbar-nav mr-auto flex-row gap-4 items-center justify-center">
     <% categories.forEach(category=> { %>
       <li class="nav-item">
-        <a href="/" class="nav-link text-white text-uppercase active text-decoration-none ">
+        <a href="/category/<%= category.slug %>"
+          class="nav-link text-white text-uppercase active text-decoration-none ">
           <%= category.title %>
         </a>
       </li>
