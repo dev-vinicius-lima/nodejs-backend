@@ -2,9 +2,11 @@ import express from "express";
 import connection from "./database/database.js";
 import CategoriesController from "./categories/CategoriesController.js";
 import articlesController from "./articles/ArticlesController.js";
+import UsersControllers from "./users/UsersController.js";
 
 import Category from './categories/Category.js';
 import Article from './articles/Article.js';
+import User from './users/User.js';
 
 const app = express();
 const port = 3000;
@@ -23,6 +25,7 @@ connection.authenticate().then(() => {
 
 app.use("/", CategoriesController);
 app.use("/", articlesController);
+app.use("/", UsersControllers);
 
 app.get("/", (req, res) => {
   Article.findAll({
