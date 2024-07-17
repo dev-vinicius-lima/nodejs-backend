@@ -5,7 +5,11 @@ import Category from "../categories/Category.js";
 const router = express.Router();
 
 router.get("/admin/articles", (req, res) => {
-  res.render("admin/articles/index")
+  Article.findAll({
+    include: [{ model: Category }]
+  }).then(articles => {
+    res.render("admin/articles/index", { articles })
+  })
 })
 
 router.get("/admin/articles/new", (req, res) => {
@@ -16,7 +20,7 @@ router.get("/admin/articles/new", (req, res) => {
 
 router.post("/articles/save", (req, res) => {
   const { title, body, category } = req.body
-
+  console.log(category)
   Article.create({
     title,
     slug: slugify(title),
@@ -25,6 +29,28 @@ router.post("/articles/save", (req, res) => {
   }).then(() => {
     res.redirect("/admin/articles")
   })
+})
+
+router.post("/articles/delete", (req, res) => {
+  const { id } = req.body
+  if (id !== undefined) {
+    if (!isNaN(id)) {
+      Article.destroy({
+        where: {
+          id
+        }
+      }).then(() => {
+        res.redirect("/admin/articles")
+      })
+
+    } else {
+      res.redirect("/admin/articles")
+    }
+
+  } else {
+    res.redirect("/admin/articles")
+  }
+
 })
 
 export default router;

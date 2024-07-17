@@ -18,7 +18,31 @@
           </tr>
         </thead>
         <tbody>
-
+          <% articles.forEach((article)=> { %>
+            <td>
+              <%= article.id %>
+            </td>
+            <td>
+              <%= article.title %>
+            </td>
+            <td>
+              <%= article.slug %>
+            </td>
+            <td>
+              <%= article.category.title %>
+            </td>
+            <td>
+              <a href="/admin/articles/<%= article.id %>/edit" class="btn btn-primary">
+                Editar
+              </a>
+              <form action="/articles/delete" method="post" style="display: inline" onsubmit="confirmDelete(event)">
+                <input type="hidden" name="id" value="<%= article.id %>">
+                <button class="btn btn-danger">
+                  Excluir
+                </button>
+              </form>
+            </td>
+            <% }); %>
         </tbody>
       </table>
     </div>
@@ -29,7 +53,7 @@
         function confirmDelete(event) {
           event.preventDefault();
 
-          const decision = confirm("Tem certeza que deseja excluir esta categoria?");
+          const decision = confirm("Tem certeza que deseja excluir este artigo?");
           decision ? event.target.submit() : event.preventDefault();
         }
       </script>

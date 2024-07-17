@@ -11,8 +11,8 @@
             <input type="text" name="title" placeholder="Defina o titulo do artigo" class="form-control"> <br>
             <textarea name="body" placeholder="Escreva o conteudo do artigo" class="form-control"
               id="article"></textarea> <br>
-            <label for="categoryId">Categoria:</label>
-            <select name="categoryId" class="form-control">
+            <label for="category">Categoria:</label>
+            <select name="category" class="form-control">
               <% categories.forEach((category)=> { %>
                 <option value="<%= category.id %>">
                   <%= category.title %>
