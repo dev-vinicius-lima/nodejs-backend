@@ -1,4 +1,5 @@
 import express from "express";
+import session from "express-session";
 import connection from "./database/database.js";
 import CategoriesController from "./categories/CategoriesController.js";
 import articlesController from "./articles/ArticlesController.js";
@@ -16,6 +17,13 @@ app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+// session
+app.use(session({
+  secret: "qualquercoisa",
+  cookie: {
+    maxAge: 30000000000
+  }
+}))
 
 connection.authenticate().then(() => {
   console.log("Conectado com o banco de dados")
@@ -26,6 +34,8 @@ connection.authenticate().then(() => {
 app.use("/", CategoriesController);
 app.use("/", articlesController);
 app.use("/", UsersControllers);
+
+
 
 app.get("/", (req, res) => {
   Article.findAll({

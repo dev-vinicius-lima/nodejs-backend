@@ -35,9 +35,38 @@ router.post("/users/create", (req, res) => {
       res.redirect("/admin/users/create")
     }
   })
-
-
 })
+
+router.get("/login", (req, res) => {
+  res.render("admin/users/login")
+})
+
+router.post("/authenticate", (req, res) => {
+  const { email, password } = req.body
+  User.findOne({ where: { email } }).then(user => {
+    if (user != undefined) { // se o usuário existir
+      const passwordCorrect = bcrypt.compare(password, user.password)
+      if (passwordCorrect) { // se a senha estiver correta
+        req.session.user = { // cria a sessão
+          id: user.id,
+          email: user.email
+        }
+        res.redirect("/admin/articles")
+      } else {
+        res.redirect("/login")
+      }
+
+    } else {
+      res.redirect("/login")
+    }
+  })
+})
+
+router.get("/logout", (req, res) => {
+  req.session.user = undefined
+  res.redirect("/")
+})
+
 
 
 export default router
