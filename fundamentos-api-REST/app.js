@@ -16,6 +16,30 @@ connection.authenticate().then(() => {
 })
 
 
+const db = {
+  games: [
+    {
+      id: 1,
+      name: "The Last of Us",
+      year: 2013,
+      price: 60
+    },
+    {
+      id: 2,
+      name: "Red Dead Redemption 2",
+      year: 2018,
+      price: 120
+    },
+    {
+      id: 3,
+      name: "God of War",
+      year: 2018,
+      price: 150
+    }
+  ]
+}
+
+
 
 app.get("/games", (req, res) => {
   res.json(db.games).status(200, "ok")
