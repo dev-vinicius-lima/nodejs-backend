@@ -4,16 +4,15 @@ import connection from '../db.js'
 const GameModel = connection.define('games', {
   id: {
     type: Sequelize.INTEGER,
-    primaryKey: true
+    primaryKey: true,
     autoIncrement: true
-    allowNull: false
   },
   name: {
     type: Sequelize.STRING,
     allowNull: false
   },
   year: {
-    type: Sequelize.INTEGER,
+    type: Sequelize.STRING,
     allowNull: false
   },
   price: {
@@ -22,9 +21,8 @@ const GameModel = connection.define('games', {
   }
 })
 
-return GameModel
-await GameModel.sync({ force: true });
-console.log('The table for the User model was just (re)created!');
+// await GameModel.sync({ force: true });
+// console.log('The table for the User model was just (re)created!');
 
 export default GameModel
 
