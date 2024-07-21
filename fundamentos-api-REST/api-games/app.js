@@ -25,7 +25,7 @@ connection.authenticate().then(() => {
 
 app.get("/games", auth, async (req, res) => {
   const getAllGames = await GameModel.findAll()
-  return res.json({ user: req.loggedUser, getAllGames }).status(200, "ok")
+  return res.json(getAllGames).status(200, "ok")
 })
 
 
@@ -96,7 +96,7 @@ app.put("/game/:id", auth, async (req, res) => {
   }
 })
 
-app.post("/auth", auth, async (req, res) => {
+app.post("/auth", async (req, res) => {
   const { email, password } = req.body
 
   if (!email || !password) {
