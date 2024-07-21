@@ -1,11 +1,12 @@
 import express from "express"
 import connection from './db.js'
 import GameModel from './model/GameModel.js'
+import cors from 'cors'
 
 
 const port = 3333
 const app = express()
-
+app.use(cors())
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 

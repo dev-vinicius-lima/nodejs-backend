@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Loja de games</title>
+</head>
+
+<body>
+  <h1>Loja de games</h1>
+  <button onclick="reloadPage()">Atualizar</button>
+  <hr />
+  <h4>Lista de games</h4>
+  <ul id="games"></ul>
+  <hr />
+  <h4>Novo game</h4>
+  <input type="text" name="name" id="name" placeholder="Nome do jogo" data-name="name" />
+  <input type="number" name="year" id="year" placeholder="Ano do jogo" />
+  <input type="number" name="price" id="price" placeholder="Preço" />
+  <button type="button" onclick="createGame()">Cadastrar</button>
+  <hr />
+  <h4>Editar Game</h4>
+  <input type="text" name="idEdit" id="idEdit" placeholder="Id" readonly />
+  <input type="text" name="nameEdit" id="nameEdit" placeholder="Nome do jogo" data-name="name" />
+  <input type="number" name="yearEdit" id="yearEdit" placeholder="Ano do jogo" />
+  <input type="number" name="priceEdit" id="priceEdit" placeholder="Preço" />
+  <button type="button" onclick="editGame()">Editar</button>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+  let gameElements = []; // Array para armazenar li
+
+  axios
+    .get("http://localhost:3333/games")
+    .then((response) => {
+      const games = response.data;
+      const list = document.getElementById("games");
+
+      games.forEach((game) => {
+        const li = document.createElement("li");
+        li.setAttribute("data-id", game.id);
+        li.setAttribute("data-name", game.name);
+        li.setAttribute("data-year", game.year);
+        li.setAttribute("data-price", game.price);
+
+        li.innerText = `${game.id} - ${game.name} - $${game.price}`;
+        list.appendChild(li);
+
+        gameElements.push({ element: li, game }); // Armazena li e o game
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.innerText = "Deletar";
+        li.appendChild(deleteBtn);
+        deleteBtn.onclick = () => {
+          axios
+            .delete(`http://localhost:3333/game/${game.id}`)
+            .then((response) => {
+              if (response.status === 200) {
+                alert("Jogo excluído com sucesso!");
+              }
+              console.log(response);
+            })
+            .catch((error) => {
+              alert("Erro ao excluir o jogo!");
+              console.log(error);
+            });
+        };
+
+        const editBtn = document.createElement("button");
+        editBtn.innerHTML = "Editar";
+        li.appendChild(editBtn);
+
+        editBtn.onclick = () => {
+          const game = gameElements.find((game) => game.element === li);
+          document.getElementById("idEdit").value = game.game.id;
+          document.getElementById("nameEdit").value = game.game.name;
+          document.getElementById("yearEdit").value = game.game.year;
+          document.getElementById("priceEdit").value = game.game.price;
+          axios.put(`http://localhost:3333/game/${game.game.id}`, {
+            id: document.getElementById("idEdit").value,
+            name: document.getElementById("nameEdit").value,
+            year: document.getElementById("yearEdit").value,
+            price: document.getElementById("priceEdit").value,
+          }).then((response) => {
+            if (response.status === 200) {
+              alert("Jogo editado com sucesso!");
+            }
+            console.log(response);
+          })
+            .catch((error) => {
+              alert("Erro ao editar o jogo!");
+              console.log(error);
+            });
+        }
+      });
+    })
+    .catch((error) => console.log(error));
+
+
+  function createGame() {
+    const name = document.getElementById("name").value;
+    const year = document.getElementById("year").value;
+    const price = document.getElementById("price").value;
+
+    if (!name || !year || !price) {
+      return alert("Preencha todos os campos");
+    } else {
+      axios
+        .post("http://localhost:3333/game", {
+          name,
+          year,
+          price,
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            alert("Jogo cadastrado com sucesso!");
+          }
+          console.log(response);
+        })
+        .catch((error) => {
+          alert("Erro ao cadastrar o jogo!");
+          console.log(error);
+        });
+    }
+  }
+
+
+  function reloadPage() {
+    window.location.reload();
+  }
+</script>
+
+</html>
