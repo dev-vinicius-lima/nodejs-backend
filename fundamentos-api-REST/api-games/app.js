@@ -1,8 +1,13 @@
 import express from "express"
 import connection from './db.js'
 import GameModel from './model/GameModel.js'
+import UserModel from './model/UserModel.js'
 import cors from 'cors'
+import jwt from "jsonwebtoken"
+import auth from "./middleware/auth.js"
 
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlciI6InZpbmljaXVzbGltYWVzQGhvdG1haWwuY29tIiwiaWF0IjoxNzIxNTk2Nzc1LCJleHAiOjE3MjE3Njk1NzV9.adNrZ-FCZD7cQwDGN4Cf6rx42mVgvrpBdSIFsEmb-9M
+export const jwtSecret = "s3cr3t"
 
 const port = 3333
 const app = express()
@@ -11,20 +16,21 @@ app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 
 
+
 connection.authenticate().then(() => {
   console.log(`Conectado ao banco de dados...`)
 }).catch((error) => {
   console.log(error)
 })
 
-app.get("/games", async (req, res) => {
+app.get("/games", auth, async (req, res) => {
   const getAllGames = await GameModel.findAll()
-  return res.json(getAllGames).status(200, "ok")
+  return res.json({ user: req.loggedUser, getAllGames }).status(200, "ok")
 })
 
 
 
-app.get("/game/:id", (req, res) => {
+app.get("/game/:id", auth, (req, res) => {
   const { id } = req.params
   if (isNaN(id)) {
     res.status(400).json({ message: "Id inválido" })
@@ -34,7 +40,7 @@ app.get("/game/:id", (req, res) => {
   }
 })
 
-app.post("/game", async (req, res) => {
+app.post("/game", auth, async (req, res) => {
   const { name, year, price } = req.body
   if (!name || !year || !price || isNaN(year) || isNaN(price)) {
     res.status(400).json({ message: "Todos os campos são obrigatórios!" })
@@ -45,7 +51,7 @@ app.post("/game", async (req, res) => {
 })
 
 
-app.delete("/game/:id", async (req, res) => {
+app.delete("/game/:id", auth, async (req, res) => {
   const { id } = req.params
   if (isNaN(id)) {
     return res.status(400).json({ message: "Id inválido!" })
@@ -60,7 +66,7 @@ app.delete("/game/:id", async (req, res) => {
   }
 })
 
-app.put("/game/:id", async (req, res) => {
+app.put("/game/:id", auth, async (req, res) => {
   const { id } = req.params
   if (isNaN(id)) {
     return res.status(400).json({ message: "Id inválido!" })
@@ -90,7 +96,29 @@ app.put("/game/:id", async (req, res) => {
   }
 })
 
+app.post("/auth", auth, async (req, res) => {
+  const { email, password } = req.body
 
+  if (!email || !password) {
+    return res.status(400).json({ message: "Todos os campos são obrigatórios!" })
+  }
+  const user = await UserModel.findOne({ where: { email } })
+
+  if (!user) {
+    return res.status(404).json({ message: "Usuário não encontrado!" })
+  }
+  if (user.password === password) {
+    jwt.sign({ id: user.id, user: user.email }, jwtSecret, { expiresIn: "48h" }, (error, token) => {
+      if (error) {
+        return res.status(500).json({ message: "Erro ao gerar token!" })
+      } else {
+        return res.status(200).json({ token })
+      }
+    })
+  } else {
+    return res.status(400).json({ message: "Credencial inválida!" })
+  }
+})
 
 
 
