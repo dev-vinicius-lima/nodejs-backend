@@ -1,23 +1,31 @@
 import express from "express"
 import session from "express-session"
 import flash from "express-flash"
+import cookieParser from "cookie-parser"
 
 const app = express()
 app.set("view engine", "ejs")
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
-
+app.use(cookieParser('s3cr3t'))
 app.use(session({
   secret: 'keyboard cat',
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: true }
+  cookie: { maxAge: 60000 }
 }))
 app.use(flash())
 
 
 app.get("/", (req, res) => {
-  res.render("index")
+  let emailError = req.flash("emailError")
+  let nameError = req.flash("nameError");
+  let pontosError = req.flash("pontosError");
+  emailError = (emailError == undefined || emailError.length == 0) ? undefined : emailError
+  nameError = (nameError == undefined || nameError.length == 0) ? undefined : nameError
+  pontosError = (pontosError == undefined || pontosError.length == 0) ? undefined : pontosError
+
+  res.render("index", { emailError, nameError, pontosError, email: req.flash("email"), nome: req.flash("nome"), pontos: req.flash("pontos") })
 })
 
 app.post("/form", (req, res) => {
@@ -35,6 +43,13 @@ app.post("/form", (req, res) => {
     pontosError = "Pontos obrigatórios e maiores que 20"
   }
   if (emailError != undefined || nameError != undefined || pontosError != undefined) {
+    req.flash("emailError", emailError)
+    req.flash("nameError", nameError)
+    req.flash("pontosError", pontosError)
+
+    req.flash("email", email)
+    req.flash("nome", nome)
+    req.flash("pontos", pontos)
     res.redirect("/")
   } else {
     res.send("Form enviado")

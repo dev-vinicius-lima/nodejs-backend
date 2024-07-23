@@ -9,9 +9,18 @@
 
 <body>
   <form method="post" action="/form">
-    <input type="email" name="email" id="email" placeholder="Email"><br>
-    <input type="text" name="nome" id="nome" placeholder="Nome"><br>
-    <input type="number" name="pontos" id="pontos" placeholder="Pontos"><br>
+    <input type="email" name="email" id="email" placeholder="Email" value="<%=email%>">
+    <span style="color:red">
+      <%=emailError%>
+    </span><br>
+    <input type="text" name="nome" id="nome" placeholder="Nome" value="<%=nome%>">
+    <span style="color:red">
+      <%=nameError%>
+    </span><br>
+    <input type="number" name="pontos" id="pontos" placeholder="Pontos" value="<%=pontos%>">
+    <span style="color:red">
+      <%=pontosError%>
+    </span><br>
     <button type="submit">Enviar</button>
   </form>
 </body>
