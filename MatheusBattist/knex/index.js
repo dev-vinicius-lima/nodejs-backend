@@ -1,4 +1,4 @@
-const database = require('./database')
+const database = require('./database');
 
 // insert de dados
 
@@ -25,7 +25,6 @@ const database = require('./database')
 //   console.log(data)
 // }).catch(err => console.log(err))
 
-
 // >>>>>>>>>> select de dados
 
 // database.select("*").from("games").then(data => {
@@ -39,7 +38,6 @@ const database = require('./database')
 //     console.log(data)
 //   }).catch(err => console.log(err))
 // }).catch(err => console.log(err))
-
 
 // >>>>>>>>>> update de dados
 // database.where({ nome: 'Fifa' }).update({ preco: 120.00 }).from("games").then(data => {
