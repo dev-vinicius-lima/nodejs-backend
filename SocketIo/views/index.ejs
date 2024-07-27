@@ -8,11 +8,27 @@
 </head>
 
 <body>
-    <h1>Hello World</h1>
+    <input type="text" placeholder="digite seu nome" id="name" oninput="enviar()">
+    <button>Enviar</button>
+    <hr>
+    <p id="result"></p>
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js"></script>
 <script>
     const socket = io("http://localhost:3333");
+    socket.on("disconnect", () => {
+        document.getElementById("result").innerHTML = "Desconectado"
+    })
+    socket.emit("boas-vindas", { name: "Olá usuario tudo bem? qual seu nome?" });
+
+    socket.on("result", (data) => {
+        document.getElementById("result").innerHTML = data
+    })
+
+    function enviar() {
+        const name = document.getElementById("name").value
+        socket.emit("name", { name })
+    }
 </script>
 
 </html>

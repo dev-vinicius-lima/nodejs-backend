@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>Chat do Vini</h1>
+    <div id="chat">
+
+    </div>
+    <br>
+    <input type="text" id="msg">
+    <br>
+    <input type="text" id="userName" placeholder="Seu Nome de Usuário">
+    <button onclick="enviar()">Enviar</button>
+
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js"></script>
+<script>
+    const socket = io("http://localhost:3333");
+    socket.on("disconnect", () => {
+        console.log("Desconectado")
+    })
+
+    socket.on("showmsg", (data) => {
+        document.getElementById("chat").innerHTML += `<p>${data.userName}: ${data.msg}</p>`
+    })
+
+    function enviar() {
+        const msg = document.getElementById("msg").value
+        const userName = document.getElementById("userName").value
+        socket.emit("msg", { msg, userName })
+    }
+</script>
+
+</html>

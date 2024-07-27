@@ -10,14 +10,12 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     console.log('X Desconectado: ' + socket.id);
   });
-  socket.on('boas-vindas', (data) => {
-    console.log(data);
-  });
-  socket.on('name', (data) => {
-    console.log(data);
-    socket.emit('result', `Olá ${data.name} Seja bem vindo!`);
+
+  socket.on('msg', (data) => {
+    socket.emit('showmsg', data);
   });
 });
+
 app.set('view engine', 'ejs');
 
 app.get('/', (req, res) => {
