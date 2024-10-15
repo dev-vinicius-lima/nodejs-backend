@@ -1,17 +1,15 @@
 import "dotenv/config"
-import express, { Application, Request, Response } from "express"
+import express from "express"
+import routes from "./routes"
 
 const port = process.env.PORT
-const server: Application = express()
+const server = express()
+
 server.use(express.json())
+server.use(routes)
 
-server.get("/", (req: Request, res: Response) => {
+routes.get("/", (req, res) => {
   res.status(200).json({ message: "Hello World" })
-})
-
-server.post("/user", (req: Request, res: Response) => {
-  const { name } = req.body
-  res.status(200).json({ message: `Usuário Criado! com o nome: ${name}` })
 })
 
 server.listen(3333, () => console.log(`server running on port ${port} `))
